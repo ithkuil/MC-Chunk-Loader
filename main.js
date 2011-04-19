@@ -33,6 +33,3 @@ window.onload = function() {
 };
 
 main();
-
-//window.setTimeout('init()', 20);
-
