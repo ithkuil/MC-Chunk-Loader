@@ -10,6 +10,7 @@ $REGION_DIR = $wd . '/world/region/';
 
 function readChunk($posx, $posz) {
   global $REGION_DIR;
+
   // calculate region file to read
   $regionX = floor($posx / 32);
   $regionZ = floor($posz / 32);
@@ -20,8 +21,10 @@ function readChunk($posx, $posz) {
   gzseek($file, $chunkHeaderLoc);
   $info = unpack('C*', gzread($file, 4));
   $chunkDataLoc = ($info[1]<<16)|($info[2]<<8)|($info[3]);
+
+  // if chunk hasn't been generated, return empty
   if($chunkDataLoc == 0) {
-    return '';
+    return array();
   }
   
   // seek to data, write to gz and return
@@ -65,14 +68,14 @@ function jsonFileOut($path) {
   }
 }
 
-function jsonChunkOut($posx, $posy) {
+function jsonChunkOut($posx, $posz) {
   global $CHUNK_DIR;
-  $chunkFile = $CHUNK_DIR . "c.$posx.$posy.json.gz";
+  $chunkFile = $CHUNK_DIR . "c.$posx.$posz.json.gz";
   if(file_exists($chunkFile)) {
     echo file_get_contents($chunkFile);
     return true;
   } else {
-    $chunkData = readChunk($posx, $posy);
+    $chunkData = readChunk($posx, $posz);
 
     $gz = gzencode(json_encode($chunkData));
 

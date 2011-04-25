@@ -187,11 +187,14 @@ function addLine(p1, p2, chunk) {
 function parseChunk(data, pos) {
   if (data) {
     var dat = JSON.parse(data);
+    var c = Object();
+    c.pos = pos;
+    if(!dat || dat.length == 0) {
+      return c;
+    }
     var nbt = new NBTReader(dat);
     var ch = nbt.read();
     var blocks = ch.root.Level.Blocks;
-    var c = Object();
-    c.pos = pos;
     extractChunk(blocks, c);
     theworld.chunks.push(c);
     $('body').trigger({
